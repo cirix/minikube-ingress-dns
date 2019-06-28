@@ -21,6 +21,7 @@ Address: 192.168.99.106
 ```
 
 Just don't forget to add 192.168.99.106 as a dns service on your host machine.
+If no match is found then no response is provided. This service will not act as a proxy to a real dns service so make sure to have a fallback dns service like google's `8.8.8.8` and `8.8.4.4`
 
 ## Installation
 
@@ -39,3 +40,5 @@ cd minikube-dns
 
 ### Customizing tcp and udp services
 Note: This updates the tcp-services and udp-services config maps. You may need to customize them if you have your own tcp and udp services you are exposing through an ingress controller. If your nginx reverse proxy service is running in a namespace other than kube-system you will also have to update the namespace in the yaml configurations. 
+
+These config maps are located in [k8s/overrides](k8s/overrides)
