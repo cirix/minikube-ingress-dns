@@ -26,4 +26,4 @@ cd minikube-dns
 ```
 
 ### Customizing tcp and udp services
-Note: This updates the tcp-services and udp-services config maps. You may need to customize them if you have your own tcp and udp services you are exposing through an ingress controller. 
+Note: This updates the tcp-services and udp-services config maps. You may need to customize them if you have your own tcp and udp services you are exposing through an ingress controller. If your nginx reverse proxy service is running in a namespace other than kube-system you will also have to update the namespace in the yaml configurations. 
