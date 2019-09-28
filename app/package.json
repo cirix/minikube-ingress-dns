@@ -1,15 +1,17 @@
 {
-  "name": "minikube-dns",
-  "version": "1.0.0",
+  "name": "minikube-ingress-dns",
+  "version": "0.1.0",
   "description": "Kubernetes Local DNS service",
   "author": "Cryptex Labs",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "start:dev": "nodemon src/index.js"
   },
   "dependencies": {
     "@kubernetes/client-node": "^0.10.2",
-    "dns2": "^1.3.0"
+    "dns2": "^1.3.0",
+    "nodemon": "^1.19.2"
   }
 }

@@ -1,0 +1,31 @@
+apiVersion: v1
+data:
+  # see https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/configmap.md for all possible options and their description
+  map-hash-bucket-size: "128"
+  hsts: "false"
+kind: ConfigMap
+metadata:
+  name: minikube-ingress-dns-nginx-load-balancer-conf
+  namespace: kube-system
+#  labels:
+#    addonmanager.kubernetes.io/mode: EnsureExists
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: minikube-ingress-dns-tcp-services
+  namespace: kube-system
+#  labels:
+#    addonmanager.kubernetes.io/mode: EnsureExists
+data:
+  53: "kube-system/kube-ingress-dns-minikube:5353"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: minikube-ingress-dns-udp-services
+  namespace: kube-system
+#  labels:
+#    addonmanager.kubernetes.io/mode: EnsureExists
+data:
+  53: "kube-system/kube-ingress-dns-minikube:5353"

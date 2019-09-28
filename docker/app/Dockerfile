@@ -8,6 +8,6 @@ WORKDIR /var/app
 
 RUN yarn install
 
-EXPOSE 53
+EXPOSE 5353
 
 CMD ["yarn", "start"]

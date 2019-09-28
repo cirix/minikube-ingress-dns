@@ -2,8 +2,8 @@ apiVersion: skaffold/v1beta11
 kind: Config
 build:
   artifacts:
-  - image: cryptexlabs/minikube-dns
-    context: ..
+  - image: minikube-ingress-dns
+    context: .
     sync:
       manual:
       # Sync all the javascript files that are in the src folder
@@ -12,10 +12,3 @@ build:
         dest: .
     docker:
       dockerfile: 'docker/app/Dockerfile'
-deploy:
-  helm:
-    releases:
-    - name: "minikube-dns"
-      chartPath: .
-      setValueTemplates:
-        minikubeIP: "{{ .MINIKUBE_IP }}"
