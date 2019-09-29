@@ -11,12 +11,12 @@ When running minikube locally you are highly likely to want to run your services
 What if you could just access your local services magically without having to edit your `/etc/hosts` file? Well now you can. This project acts as a DNS service that runs inside your kubernetes cluster. All you have to do is install the service and add the `$(minikube ip)` as a DNS server on your host machine. Each time the dns service is queried an API call is made to the kubernetes master service for a list of all the ingresses. If a match is found for the name a response is given with an IP address as the `$(minikube ip)` which was provided when the helm chart was installed. So for example lets say my minikube ip address is `192.168.99.106` and I have an ingress controller with the name of `myservice.local` then I would get a result like so: 
 
 ```text
-#bash:~$ nslookup myservice.localhost
+#bash:~$ nslookup myservice.test
 Server:		192.168.99.106
 Address:	192.168.99.106#53
 
 Non-authoritative answer:
-Name:	myservice.localhost
+Name:	myservice.test
 Address: 192.168.99.106
 ```
 
@@ -47,12 +47,17 @@ kubectl apply -f example/
 
 ### Lookup the domain names
 ```bash
-nslookup hello-john.localhost
-nslookup hello-jane.localhost
+nslookup hello-john.test
+nslookup hello-jane.test
 ```
 
 ### Curl the example server
 ```bash
-curl http://hello-john.localhost
-curl http://hello-jane.localhost
+curl http://hello-john.test
+curl http://hello-jane.test
 ```
+
+## Known issues
+
+### .localhost domains will not resolve on chromium
+.localhost domains will not correctly resolve on chromium for some reason. Instead use .test, .example, or .invalid
