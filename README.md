@@ -105,3 +105,12 @@ Hostname: hello-world-app-557ff7dbd8-64mtv
 
 ### .localhost domains will not resolve on chromium
 .localhost domains will not correctly resolve on chromium since it is used as a loopback address. Instead use .test, .example, or .invalid
+
+### Mac OS
+
+#### mDNS reloading
+Each time a file is created or a change is made to a file in `/etc/resolver` you will need to run the following to reload Mac OS mDNS resolver.
+```bash
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.mDNSResponder.plist
+sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.mDNSResponder.plist
+```
