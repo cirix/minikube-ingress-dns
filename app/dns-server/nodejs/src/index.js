@@ -103,18 +103,20 @@ createServer((dnsRequest, dnsResponseSend) => {
 
 const getMinikubeIP = async () => {
     return new Promise((resolve, reject) => {
-        request.get(`${kc.getCurrentCluster().server}/api/v1/nodes/minikube`, opts, (error, response, jsonBody) => {
+        request.get(`${kc.getCurrentCluster().server}/api`, opts, (error, response, jsonBody) => {
             if (error) {
                 return reject(error);
             }
             const body = JSON.parse(jsonBody);
-            for (let address of body.status.addresses) {
-                if (address.type === 'InternalIP') {
-                    console.log(`Got minikube ip: ${address.address}`);
-                    return resolve(address.address)
-                }
+            if(body.serverAddressByClientCIDRs.length > 0){
+                const address = body.serverAddressByClientCIDRs[0].serverAddress;
+                const parts = address.split(':');
+                const ip = parts[0];
+                console.log(`Got minikube ip: ${ip}`);
+                resolve(ip)
+            }else{
+                reject('No cluster ip found')
             }
-            reject('No internal IP found for node minikube')
         });
     });
 };

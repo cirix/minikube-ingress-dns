@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 # Only run this build if files in the dns-server directory have changed.
-if [[ ! -z "$(git log --name-status --oneline [HEAD...HEAD^1] | grep "app/dns-server/docker\|app/dns-server/nodejs" )" ]]; then
+if [[ ! -z "$(git log -1 --name-only --oneline | grep "app/dns-server/docker\|app/dns-server/nodejs" )" ]]; then
   version=$(jq -r '.version' app/dns-server/nodejs/package.json)
   docker build app/dns-server -f app/dns-server/docker/nodejs/Dockerfile --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$version --tag $CI_REGISTRY_IMAGE:latest
   echo "$GIT_SSH_PK" | base64 -d > id_rsa
