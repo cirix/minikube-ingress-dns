@@ -27,7 +27,7 @@ Address: 192.168.99.106
 minikube start
 ```
 
-Note: Only works with minikube v1.4.1 or later
+Note: Only works with minikube v1.4.1 or later. At the time of this writing this version has not been released so you will need to build minikube from the master branch. 
 
 ### Install the kubernetes resources
 ```bash
