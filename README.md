@@ -32,7 +32,7 @@ Note: Only works with minikube v1.4.1 or later. At the time of this writing this
 
 ### Install the kubernetes resources
 ```bash
-kubectl apply -f k8s/
+kubectl apply -f app/dns-server/k8s/
 ```
 
 ### Add the minikube ip as a dns server
