@@ -132,6 +132,5 @@ init().then(() => {
     console.log("Minikube ingress DNS service initialized");
 }).catch(() => {
     console.error("Minikube ingress DNS service initialization failed");
+    process.exit(1);
 });
-
-

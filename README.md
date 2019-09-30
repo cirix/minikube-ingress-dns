@@ -22,6 +22,13 @@ Address: 192.168.99.106
 
 ## Installation
 
+### Start minikube
+```
+minikube start
+```
+
+Note: Only works with minikube v1.4.1 or later
+
 ### Install the kubernetes resources
 ```bash
 kubectl apply -f k8s/
@@ -30,9 +37,14 @@ kubectl apply -f k8s/
 ### Add the minikube ip as a dns server
 
 #### Mac OS
-```bash
-./bin/
+Create a file in /etc/resolver/minikube-profilename-test
 ```
+domain test
+nameserver 192.168.99.169
+search_order 1
+timeout 5
+```
+Replace `192.168.99.169` with your minikube ip
 
 #### Linux
 
