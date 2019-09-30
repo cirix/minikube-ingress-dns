@@ -8,7 +8,7 @@ build:
       manual:
       # Sync all the javascript files that are in the src folder
       # with the container src folder
-      - src: 'app/src/**/*.js'
+      - src: 'nodejs/src/**/*.js'
         dest: .
     docker:
-      dockerfile: 'docker/app/Dockerfile'
+      dockerfile: 'docker/nodejs/Dockerfile'

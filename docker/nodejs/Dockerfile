@@ -2,7 +2,7 @@ FROM node:12-alpine
 
 RUN apk add yarn
 
-COPY app /var/app
+COPY nodejs /var/app
 
 WORKDIR /var/app
 

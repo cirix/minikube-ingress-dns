@@ -31,7 +31,7 @@ kubectl apply -f k8s/
 
 #### Mac OS
 ```bash
-networksetup -setdnsservers Wi-Fi $(minikube ip)
+./bin/
 ```
 
 #### Linux

@@ -16,8 +16,8 @@ build:
     refs:
       - master
   script:
-    - version=$(jq -r '.version' app/package.json)
-    - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$version --tag $CI_REGISTRY_IMAGE:latest .
+    - version=$(jq -r '.version' nodejs/package.json)
+    - docker build . -f docker/nodejs/Dockerfile --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$version --tag $CI_REGISTRY_IMAGE:latest
     - echo "$GIT_SSH_PK" | base64 -d > id_rsa
     - chmod 400 id_rsa
     - echo 'ssh -i ./id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $*' > ssh
