@@ -1,4 +1,5 @@
 # Minikube Ingress DNS
+![Build Status](https://gitlab.com/cryptexlabs/public/development/minikube-ingress-dns/badges/master/pipeline.svg)
 
 DNS service for ingress controllers running on your minikube server
 
