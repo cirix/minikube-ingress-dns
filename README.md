@@ -57,19 +57,50 @@ TODO
 kubectl apply -f example/
 ```
 
-### Lookup the domain names
+### Validate DNS queries are returning A records
 ```bash
-nslookup hello-john.test
-nslookup hello-jane.test
+nslookup hello-john.test $(minikube ip)
+nslookup hello-jane.test $(minikube ip)
+```
+
+### Validate domain names are resolving on host OS
+```bash
+ping hello-john.test
+```
+Expected results:
+```text
+PING hello-john.test (192.168.99.169): 56 data bytes
+64 bytes from 192.168.99.169: icmp_seq=0 ttl=64 time=0.361 ms
+```
+```bash
+ping hello-jane.test
+```
+```text
+PING hello-jane.test (192.168.99.169): 56 data bytes
+64 bytes from 192.168.99.169: icmp_seq=0 ttl=64 time=0.262 ms
 ```
 
 ### Curl the example server
 ```bash
 curl http://hello-john.test
+```
+Expected result:
+```text
+Hello, world!
+Version: 1.0.0
+Hostname: hello-world-app-557ff7dbd8-64mtv
+```
+```bash
 curl http://hello-jane.test
+```
+Expected result:
+```text
+Hello, world!
+Version: 1.0.0
+Hostname: hello-world-app-557ff7dbd8-64mtv
 ```
 
 ## Known issues
 
 ### .localhost domains will not resolve on chromium
-.localhost domains will not correctly resolve on chromium for some reason. Instead use .test, .example, or .invalid
+.localhost domains will not correctly resolve on chromium since it is used as a loopback address. Instead use .test, .example, or .invalid
