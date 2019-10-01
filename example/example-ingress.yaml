@@ -7,14 +7,14 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   rules:
-    - host: hello-sally.test
+    - host: hello-john.test
       http:
         paths:
           - path: /|/(.+)
             backend:
               serviceName: hello-world-app
               servicePort: 80
-    - host: hello-bob.test
+    - host: hello-jane.test
       http:
         paths:
           - path: /|/(.+)
