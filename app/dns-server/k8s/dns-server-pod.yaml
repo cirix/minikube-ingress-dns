@@ -24,12 +24,6 @@ rules:
       - udp-services
   - apiGroups:
       - ""
-    resources:
-      - nodes
-    verbs:
-      - get
-  - apiGroups:
-      - ""
       - "extensions"
       - "networking.k8s.io"
     resources:
