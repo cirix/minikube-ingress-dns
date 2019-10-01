@@ -93,6 +93,11 @@ createServer((dnsRequest, dnsResponseSend) => {
                 }
 
                 dnsResponseSend(dnsResponse);
+            }).catch(() => {
+                const dnsResponse = new Packet(dnsRequest);
+                dnsResponse.header.qr = 1;
+                dnsResponse.header.ra = 1;
+                dnsResponseSend(dnsResponse);
             })
         }
     });
