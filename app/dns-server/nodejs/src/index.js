@@ -2,11 +2,7 @@
 const request      = require('request');
 const createServer = require('dns2').createServer;
 const Packet       = require('dns2').Packet;
-const {Resolver}   = require('dns').promises;
 const k8s          = require('@kubernetes/client-node');
-
-const resolver = new Resolver();
-resolver.setServers(['8.8.8.8', '8.8.4.4']);
 
 const kc = new k8s.KubeConfig();
 kc.loadFromDefault();
@@ -15,9 +11,8 @@ const opts = {};
 kc.applyToRequest(opts);
 
 const dnsPort = parseInt(process.env.DNS_PORT, 10);
-let minikubeIP;
 
-createServer((dnsRequest, dnsResponseSend) => {
+const respond = (dnsRequest, dnsResponseSend) => {
 
     console.log(JSON.stringify(dnsRequest));
 
@@ -46,98 +41,26 @@ createServer((dnsRequest, dnsResponseSend) => {
 
         console.log('Confirmed names:' + JSON.stringify(confirmedNames));
 
-        if (confirmedNames.length > 0) {
-            const dnsResponse     = new Packet(dnsRequest);
-            dnsResponse.header.qr = 1;
-            dnsResponse.header.ra = 1;
+        const dnsResponse     = new Packet(dnsRequest);
+        dnsResponse.header.qr = 1;
+        dnsResponse.header.ra = 1;
 
-            for (let i = 0; i < confirmedNames.length; i++) {
-                dnsResponse.answers.push({
-                                             address: minikubeIP,
-                                             type   : Packet.TYPE.A,
-                                             class  : Packet.CLASS.IN,
-                                             ttl    : 300,
-                                             name   : confirmedNames[i]
-                                         });
-
-                console.log(dnsResponse);
-            }
-
-            dnsResponseSend(dnsResponse);
-        } else {
-
-            const promises = [];
-            for (let i = 0; i < names.length; i++) {
-                promises.push(new Promise((resolve, reject) => {
-                    const name = names[i];
-                    resolver.resolve(names[i]).then((result) => {
-                        return resolve({name, result});
-                    }).catch(reject);
-                }))
-            }
-            Promise.all(promises).then(list => {
-                const dnsResponse     = new Packet(dnsRequest);
-
-                for (const item of list) {
-                    dnsResponse.header.qr = 1;
-                    dnsResponse.header.ra = 1;
-                    for (const result of item.result) {
-                        dnsResponse.answers.push({
-                                                     address: result,
-                                                     type   : Packet.TYPE.A,
-                                                     class  : Packet.CLASS.IN,
-                                                     ttl    : 300,
-                                                     name   : item.name
-                                                 });
-                    }
-                }
-
-                dnsResponseSend(dnsResponse);
-            }).catch(() => {
-                const dnsResponse = new Packet(dnsRequest);
-                dnsResponse.header.qr = 1;
-                dnsResponse.header.ra = 1;
-                dnsResponseSend(dnsResponse);
-            })
+        for (let i = 0; i < confirmedNames.length; i++) {
+            dnsResponse.answers.push({
+                address: process.env.POD_IP,
+                type   : Packet.TYPE.A,
+                class  : Packet.CLASS.IN,
+                ttl    : 300,
+                name   : confirmedNames[i]
+            });
         }
-    });
 
-}).socket.bind(dnsPort, '0.0.0.0', ()=> {
-    console.log(`Listening on port ${dnsPort}`);
-});
+        console.log(dnsResponse);
 
-const getMinikubeIP = async () => {
-    return new Promise((resolve, reject) => {
-        request.get(`${kc.getCurrentCluster().server}/api`, opts, (error, response, jsonBody) => {
-            if (error) {
-                return reject(error);
-            }
-            const body = JSON.parse(jsonBody);
-            if(body.serverAddressByClientCIDRs.length > 0){
-                const address = body.serverAddressByClientCIDRs[0].serverAddress;
-                const parts = address.split(':');
-                const ip = parts[0];
-                console.log(`Got minikube ip: ${ip}`);
-                resolve(ip)
-            }else{
-                reject('No cluster ip found')
-            }
-        });
+        dnsResponseSend(dnsResponse);
     });
 };
 
-const init = async () => {
-    const promises = [];
-    promises.push(getMinikubeIP().then((ip) => {
-        minikubeIP = ip;
-        return Promise.resolve();
-    }));
-    return Promise.all(promises);
-};
-
-init().then(() => {
-    console.log("Minikube ingress DNS service initialized");
-}).catch(() => {
-    console.error("Minikube ingress DNS service initialization failed");
-    process.exit(1);
+createServer(respond).socket.bind(dnsPort, process.env.POD_IP, () => {
+    console.log(`Listening to ${process.env.POD_IP} on port ${dnsPort}`);
 });
