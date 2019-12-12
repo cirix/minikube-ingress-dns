@@ -3,6 +3,7 @@ const request      = require('request');
 const createServer = require('dns2').createServer;
 const Packet       = require('dns2').Packet;
 const k8s          = require('@kubernetes/client-node');
+const _            = require('lodash');
 
 const kc = new k8s.KubeConfig();
 kc.loadFromDefault();
@@ -11,6 +12,9 @@ const opts = {};
 kc.applyToRequest(opts);
 
 const dnsPort = parseInt(process.env.DNS_PORT, 10);
+
+// See https://tools.ietf.org/html/rfc1034#section-4.3.3
+const wildcardRegex = new RegExp('^[*][.](?<anydomain>[^*]+)$');
 
 const respond = (dnsRequest, dnsResponseSend) => {
 
@@ -33,8 +37,22 @@ const respond = (dnsRequest, dnsResponseSend) => {
             for (let k = 0; k < rules.length; k++) {
                 const rule = rules[k];
                 const host = rule.host;
+                if (typeof host === "undefined") {
+                    continue;
+                }
                 if (names.includes(host)) {
                     confirmedNames.push(host);
+                }
+                else {
+                    const match = host.match(wildcardRegex);
+                    if (match) {
+                        const hostRegex = new RegExp(`[^*]+[.]${_.escapeRegExp(match.groups.anydomain)}`);
+                        for (const name of names) {
+                            if (name.match(hostRegex)) {
+                                confirmedNames.push(name);
+                            }
+                        }
+                    }
                 }
             }
         }
