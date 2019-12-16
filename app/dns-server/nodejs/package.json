@@ -1,6 +1,6 @@
 {
   "name": "minikube-ingress-dns",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Kubernetes Local DNS service",
   "author": "Cryptex Labs",
   "main": "index.js",
