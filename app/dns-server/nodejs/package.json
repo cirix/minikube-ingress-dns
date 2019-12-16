@@ -12,6 +12,7 @@
   "dependencies": {
     "@kubernetes/client-node": "^0.10.2",
     "dns2": "^1.3.0",
+    "lodash": "^4.17.15",
     "nodemon": "^1.19.2"
   }
 }
