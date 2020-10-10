@@ -15,5 +15,6 @@ build:
   only:
     refs:
       - master
+      - tags
   script:
     - sh ./app/dns-server/bin/build-deploy.sh
