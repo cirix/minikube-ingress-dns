@@ -62,6 +62,7 @@ const respond = (dnsRequest, dnsResponseSend) => {
         const dnsResponse     = new Packet(dnsRequest);
         dnsResponse.header.qr = 1;
         dnsResponse.header.ra = 1;
+        dnsResponse.additionals = [];
 
         for (let i = 0; i < confirmedNames.length; i++) {
             dnsResponse.answers.push({
