@@ -27,7 +27,7 @@ jobs:
         with:
           context: .
           platforms: linux/arm64, linux/amd64, windows/amd64
-          file: app/dns/dns-server/docker/nodejs/Dockerfile
+          file: app/dns-server/docker/nodejs/Dockerfile
           push: true
           tags: |
             cirix/minikube-ingress-dns:latest
