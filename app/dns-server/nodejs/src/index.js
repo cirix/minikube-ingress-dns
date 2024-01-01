@@ -26,7 +26,7 @@ const respond = (dnsRequest, dnsResponseSend) => {
         names.push(name);
     }
 
-    request.get(`${kc.getCurrentCluster().server}/apis/extensions/v1beta1/ingresses`, opts, (error, response, jsonBody) => {
+    request.get(`${kc.getCurrentCluster().server}/apis/extensions/v1/ingresses`, opts, (error, response, jsonBody) => {
 
         const confirmedNames = [];
 
