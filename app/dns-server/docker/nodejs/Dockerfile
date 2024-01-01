@@ -1,4 +1,4 @@
-FROM node:12.16.1-alpine3.11
+FROM node:alpine3.19
 RUN apk add yarn
 COPY nodejs /var/app
 WORKDIR /var/app
