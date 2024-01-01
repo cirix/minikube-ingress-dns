@@ -2,7 +2,7 @@ apiVersion: skaffold/v1beta11
 kind: Config
 build:
   artifacts:
-  - image: cryptexlabs/minikube-ingress-dns
+  - image: cirix/minikube-ingress-dns
     context: .
     sync:
       manual:
