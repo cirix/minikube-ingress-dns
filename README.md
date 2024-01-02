@@ -1,5 +1,5 @@
 # Minikube Ingress DNS
-[![Minikube Ingress-DNS](https://github.com/cirix/minikube-ingress-dns/actions/workflows/minikube-ingress-dns.yml/badge.svg)](https://github.com/cirix/minikube-ingress-dns/actions/workflows/minikube-ingress-dns.yml)
+[![Minikube Ingress-DNS](https://github.com/cirix/minikube-ingress-dns/actions/workflows/github-minikube-actions.yml/badge.svg)](https://github.com/cirix/minikube-ingress-dns/actions/workflows/github-minikube-actions.yml)
 DNS service for ingress controllers running on your minikube server
 
 ## NOTE
