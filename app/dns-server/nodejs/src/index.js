@@ -13,8 +13,8 @@ kc.loadFromDefault();
 const opts = {};
 kc.applyToRequest(opts);
 
-console.log(JSON.stringify(opts));
-console.log('Environment: ' + JSON.stringify(process.env));
+console.debug(JSON.stringify(opts));
+console.debug('Environment: ' + JSON.stringify(process.env));
 
 const dnsPort = parseInt(process.env.DNS_PORT, 10);
 
@@ -34,7 +34,7 @@ const respond = (dnsRequest, dnsResponseSend) => {
     request.get(`${kc.getCurrentCluster().server}/apis/extensions/v1/ingresses`, opts, (error, response, jsonBody) => {
 
         const confirmedNames = [];
-        console.log('Checking jsonBody:' + JSON.stringify(jsonBody));
+        console.debug('Checking jsonBody:' + JSON.stringify(jsonBody));
         const body = JSON.parse(jsonBody);
         for (let i = 0; i < body.items.length; i++) {
             const ingress = body.items[i];
@@ -94,7 +94,7 @@ const server = dns2.createServer({
             type: Packet.TYPE.A,
             class: Packet.CLASS.IN,
             ttl: 300,
-            address: '8.8.8.8'
+            address: process.env.POD_IP
         });
         send(response);
     }
