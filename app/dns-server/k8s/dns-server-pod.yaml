@@ -89,8 +89,8 @@ spec:
   hostNetwork: true
   containers:
     - name: minikube-ingress-dns
-      image: "cryptexlabs/minikube-ingress-dns:0.1.1"
-      imagePullPolicy: IfNotPresent
+      image: "cirix/minikube-ingress-dns:latest"
+      imagePullPolicy: Always
       ports:
         - containerPort: 53
           protocol: UDP

@@ -11,6 +11,9 @@ kc.loadFromDefault();
 const opts = {};
 kc.applyToRequest(opts);
 
+console.log(JSON.stringify(opts));
+console.log('Environment: ' + JSON.stringify(process.env));
+
 const dnsPort = parseInt(process.env.DNS_PORT, 10);
 
 // See https://tools.ietf.org/html/rfc1034#section-4.3.3
@@ -29,7 +32,7 @@ const respond = (dnsRequest, dnsResponseSend) => {
     request.get(`${kc.getCurrentCluster().server}/apis/extensions/v1/ingresses`, opts, (error, response, jsonBody) => {
 
         const confirmedNames = [];
-
+        console.log('Checking jsonBody:' + JSON.stringify(jsonBody));
         const body = JSON.parse(jsonBody);
         for (let i = 0; i < body.items.length; i++) {
             const ingress = body.items[i];
