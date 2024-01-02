@@ -1,10 +1,11 @@
 # Minikube Ingress DNS
-![Build Status](https://gitlab.com/cryptexlabs/public/development/minikube-ingress-dns/badges/master/pipeline.svg)
-
+[![Minikube Ingress-DNS](https://github.com/cirix/minikube-ingress-dns/actions/workflows/minikube-ingerss-dns.yml/badge.svg)](https://github.com/cirix/minikube-ingress-dns/actions/workflows/minikube-ingress-dns.yml)
 DNS service for ingress controllers running on your minikube server
 
+## NOTE
+This version is a fork of the original minikube-ingress-dns project from cryptexlab. The project has been inactive. I have taken the code and updated dependencies and security updates.
 ## Overview
-
+The DNS service in order to be able to run DNS queries against local defined domains on the K8s cluster
 ### Problem
 When running minikube locally you are highly likely to want to run your services on an ingress controller so that you don't have to use minikube tunnel or NodePorts to access your services. While NodePort might be ok in a lot of circumstances in order to test some features an ingress is necessary. Ingress controllers are great because you can define your entire architecture in something like a helm chart and all your services will be available. There is only 1 problem. That is that your ingress controller works basically off of dns and while running minikube that means that your local dns names like `local.service` will have to resolve to `$(minikube ip)` not really a big deal except the only real way to do this is to add an entry for every service in your `/etc/hosts` file. This gets messy for obvious reasons. If you have a lot of services running that each have their own dns entry then you have to set those up manually. Even if you automate it you then need to rely on the host operating system storing configurations instead of storing them in your cluster. To make it worse it has to be constantly maintained and updated as services are added, remove, and renamed. I call it the `/ets/hosts` pollution problem.
 
