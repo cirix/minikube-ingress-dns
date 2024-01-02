@@ -1,9 +1,11 @@
 // noinspection NpmUsedModulesInstalled
-const request      = require('request');
-const createServer = require('dns2').createServer;
-const Packet       = require('dns2').Packet;
-const k8s          = require('@kubernetes/client-node');
-const _            = require('lodash');
+const request = require('request');
+const dns2 = require('dns2');
+const Packet = require('dns2').Packet;
+const k8s = require('@kubernetes/client-node');
+const _ = require('lodash');
+const {createServer} = require("dns2/server");
+const dns = require("dns");
 
 const kc = new k8s.KubeConfig();
 kc.loadFromDefault();
@@ -36,7 +38,7 @@ const respond = (dnsRequest, dnsResponseSend) => {
         const body = JSON.parse(jsonBody);
         for (let i = 0; i < body.items.length; i++) {
             const ingress = body.items[i];
-            const rules   = ingress.spec.rules;
+            const rules = ingress.spec.rules;
             for (let k = 0; k < rules.length; k++) {
                 const rule = rules[k];
                 const host = rule.host;
@@ -45,8 +47,7 @@ const respond = (dnsRequest, dnsResponseSend) => {
                 }
                 if (names.includes(host)) {
                     confirmedNames.push(host);
-                }
-                else {
+                } else {
                     const match = host.match(wildcardRegex);
                     if (match) {
                         const hostRegex = new RegExp(`[^*]+[.]${_.escapeRegExp(match.groups.anydomain)}`);
@@ -62,7 +63,7 @@ const respond = (dnsRequest, dnsResponseSend) => {
 
         console.log('Confirmed names:' + JSON.stringify(confirmedNames));
 
-        const dnsResponse     = new Packet(dnsRequest);
+        const dnsResponse = new Packet(dnsRequest);
         dnsResponse.header.qr = 1;
         dnsResponse.header.ra = 1;
         dnsResponse.additionals = [];
@@ -70,10 +71,10 @@ const respond = (dnsRequest, dnsResponseSend) => {
         for (let i = 0; i < confirmedNames.length; i++) {
             dnsResponse.answers.push({
                 address: process.env.POD_IP,
-                type   : Packet.TYPE.A,
-                class  : Packet.CLASS.IN,
-                ttl    : 300,
-                name   : confirmedNames[i]
+                type: Packet.TYPE.A,
+                class: Packet.CLASS.IN,
+                ttl: 300,
+                name: confirmedNames[i]
             });
         }
 
@@ -82,7 +83,47 @@ const respond = (dnsRequest, dnsResponseSend) => {
         dnsResponseSend(dnsResponse);
     });
 };
-
-createServer(respond).socket.bind(dnsPort, process.env.POD_IP, () => {
-    console.log(`Listening to ${process.env.POD_IP} on port ${dnsPort}`);
+const server = dns2.createServer({
+    udp: true,
+    handle: (request, send, rinfo) => {
+        const response = Packet.createResponseFromRequest(request);
+        const [ question ] = request.questions;
+        const { name } = question;
+        response.answers.push({
+            name,
+            type: Packet.TYPE.A,
+            class: Packet.CLASS.IN,
+            ttl: 300,
+            address: '8.8.8.8'
+        });
+        send(response);
+    }
 });
+
+server.on('request', (request, response, rinfo) => {
+    console.log(request.header.id, request.questions[0]);
+});
+
+server.on('requestError', (error) => {
+    console.log('Client sent an invalid request', error);
+});
+
+server.on('listening', () => {
+    console.log(server.addresses());
+});
+
+server.on('close', () => {
+    console.log('server closed');
+});
+
+server.listen({
+    // Optionally specify port, address and/or the family of socket() for udp server:
+    udp: {
+        port: dnsPort,
+        address: process.env.POD_IP,
+        type: "udp4",  // IPv4 or IPv6 (Must be either "udp4" or "udp6")
+    },
+});
+// createServer(respond).socket.bind(dnsPort, process.env.POD_IP, () => {
+//     console.log(`Listening to ${process.env.POD_IP} on port ${dnsPort}`);
+// });
