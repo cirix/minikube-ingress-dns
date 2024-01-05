@@ -90,7 +90,7 @@ spec:
   containers:
     - name: minikube-ingress-dns
       image: "cirix/minikube-ingress-dns:latest"
-      imagePullPolicy: Always
+      imagePullPolicy: IfNotPresent
       ports:
         - containerPort: 53
           protocol: UDP
@@ -100,4 +100,11 @@ spec:
         - name: POD_IP
           valueFrom:
             fieldRef:
-              fieldPath: status.podIP
+              fieldPath: status.podIP      
+      resources:
+        limits:
+          cpu: "1.0"
+          memory: "512Mi"
+        requests:
+          cpu: "0.5"
+          memory: "256Mi"
